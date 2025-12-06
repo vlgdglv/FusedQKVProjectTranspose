@@ -1,0 +1,63 @@
+[
+  {
+    "op": "FusedQKVProjectTranspose",
+    "input_desc": [
+      { "name": "hidden_states", "param_type": "required",
+        "format": ["ND","ND","ND"],
+        "type": ["float16","bfloat16","float32"]
+      },
+      { "name": "w_q", "param_type": "required",
+        "format": ["ND","ND","ND"],
+        "type": ["float16","bfloat16","float32"]
+      },
+      { "name": "w_k", "param_type": "required",
+        "format": ["ND","ND","ND"],
+        "type": ["float16","bfloat16","float32"]
+      },
+      { "name": "w_v", "param_type": "required",
+        "format": ["ND","ND","ND"],
+        "type": ["float16","bfloat16","float32"]
+      },
+      { "name": "b_q", "param_type": "optional",
+        "format": ["ND","ND","ND"],
+        "type": ["float16","bfloat16","float32"]
+      },
+      { "name": "b_k", "param_type": "optional",
+        "format": ["ND","ND","ND"],
+        "type": ["float16","bfloat16","float32"]
+      },
+      { "name": "b_v", "param_type": "optional",
+        "format": ["ND","ND","ND"],
+        "type": ["float16","bfloat16","float32"]
+      }
+    ],
+    "output_desc": [
+      { "name": "q", "param_type": "required",
+        "format": ["ND","ND","ND"],
+        "type": ["float16","bfloat16","float32"]
+      },
+      { "name": "k", "param_type": "required",
+        "format": ["ND","ND","ND"],
+        "type": ["float16","bfloat16","float32"]
+      },
+      { "name": "v", "param_type": "required",
+        "format": ["ND","ND","ND"],
+        "type": ["float16","bfloat16","float32"]
+      }
+    ],
+    "attr": [
+      {
+        "name": "num_heads",
+        "param_type": "required",
+        "type": "int",
+        "default_value": 0
+      },
+      {
+        "name": "num_kv_heads",
+        "param_type": "required",
+        "type": "int",
+        "default_value": 0
+      }
+    ]
+  }
+]
