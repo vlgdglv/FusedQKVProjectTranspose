@@ -1,4 +1,4 @@
-
+#include <iostream>
 #include "fused_qkv_project_transpose_tiling.h"
 #include "register/op_def_registry.h"
 
@@ -6,96 +6,133 @@
 namespace optiling {
     static ge::graphStatus TilingFunc(gert::TilingContext* context)
     {
-      FusedQKVProjectTransposeTilingData tiling;
-    
-      // 0: hidden_states, shape [B, S, D]
-      const gert::StorageShape* x_shape = context->GetInputShape(0);
-      const gert::Shape& storage_shape = x_shape->GetStorageShape();
-    
-      if (storage_shape.GetDimNum() < 2) {
-        return ge::GRAPH_FAILED;
-      }
-    
-      uint32_t B = static_cast<uint32_t>(storage_shape.GetDim(0));
-      uint32_t S = static_cast<uint32_t>(storage_shape.GetDim(1));
-      uint32_t D = 1;
-      // 剩下所有维度乘起来当 hidden size（兼容 [B,S,D] / [B,S,*,*]）
-      for (int i = 2; i < storage_shape.GetDimNum(); ++i) {
-        D *= static_cast<uint32_t>(storage_shape.GetDim(i));
-      }
-    
-      const gert::RuntimeAttrs *runtime_attrs = context->GetAttrs();
-      if (runtime_attrs == nullptr) {
-          return ge::GRAPH_FAILED;
-      }
+        // std::cout << "[FQKV Tiling] Enter TilingFunc" << std::endl;
 
-      const int64_t *num_heads_ptr = runtime_attrs->GetInt(0);
-      const int64_t *num_kv_heads_ptr = runtime_attrs->GetInt(1);
-      // const int64_t *head_dim_ptr = runtime_attrs->GetInt(2);
+        optiling::TilingData tiling;
 
-      int32_t num_heads    = (num_heads_ptr    != nullptr) ? *num_heads_ptr    : 0;
-      int32_t num_kv_heads = (num_kv_heads_ptr != nullptr) ? *num_kv_heads_ptr : 0;
-      // int32_t head_dim     = (head_dim_ptr     != nullptr) ? *head_dim_ptr     : 0;
-      
-      tiling.set_batch(B);
-      tiling.set_seq_len(S);
-      tiling.set_hidden(D);
-      tiling.set_num_heads(num_heads);
-      tiling.set_num_kv_heads(num_kv_heads);
-    
-      uint64_t total_tokens = static_cast<uint64_t>(B) * static_cast<uint64_t>(S);
-      if (total_tokens == 0) {
-        tiling.set_tokens_per_block(1);
-        context->SetBlockDim(1);
-      } else {
-        // 一个很保守的 heuristic：
-        // - token 少（decode S=1）时，每个 block 1 个 token；
-        // - token 多一点时，每个 block x 个 token；
-        uint32_t tokens_per_block = 1;
-        if (total_tokens >= 32) {
-          tokens_per_block = 8;
+        
+        // 0: hidden_states, shape [B, S, D]
+        const gert::StorageShape* x_shape = context->GetInputShape(0);
+        const gert::Shape& storage_shape = x_shape->GetStorageShape();
+
+        // std::cout << "[FQKV Tiling] dim_num = " << storage_shape.GetDimNum() << std::endl;
+        
+        
+        if (storage_shape.GetDimNum() < 2) {
+            return ge::GRAPH_FAILED;
         }
-    
-        uint32_t block_dim = static_cast<uint32_t>(
-            (total_tokens + tokens_per_block - 1) / tokens_per_block);
-    
-        if (block_dim == 0) {
-          block_dim = 1;
-        } else if (block_dim > 32) {
-          block_dim = 32;
+
+        uint32_t B = static_cast<uint32_t>(storage_shape.GetDim(0));
+        uint32_t S = static_cast<uint32_t>(storage_shape.GetDim(1));
+        uint32_t D = 1;
+
+        for (int i = 2; i < storage_shape.GetDimNum(); ++i) {
+            D *= static_cast<uint32_t>(storage_shape.GetDim(i));
         }
-    
-        tiling.set_tokens_per_block(tokens_per_block);
-        context->SetBlockDim(block_dim);
-      }
-      
-      // save tiling data
-      auto *raw = context->GetRawTilingData();
-      tiling.SaveToBuffer(raw->GetData(), raw->GetCapacity());
-      raw->SetDataSize(tiling.GetDataSize());
-    
-      return ge::GRAPH_SUCCESS;
+
+        // std::cout << "[FQKV Tiling] B=" << B << " S=" << S << " D=" << D << std::endl;
+
+        const gert::RuntimeAttrs *runtime_attrs = context->GetAttrs();
+        if (runtime_attrs == nullptr) {
+            return ge::GRAPH_FAILED;
+        }
+        
+        // std::cout << "[FQKV Tiling] runtime_attrs->GetAttrNum()=" << runtime_attrs->GetAttrNum() << std::endl;
+        // const int64_t *num_heads_ptr = runtime_attrs->GetInt(0);
+        // const int64_t *num_kv_heads_ptr = runtime_attrs->GetInt(1);
+        // const int64_t *head_dim_ptr = runtime_attrs->GetInt(2);
+
+        // int32_t num_heads    = (num_heads_ptr    != nullptr) ? *num_heads_ptr    : 0;
+        // int32_t num_kv_heads = (num_kv_heads_ptr != nullptr) ? *num_kv_heads_ptr : 0;
+        int32_t num_heads = 32;
+        int32_t num_kv_heads = 32;
+        // std::cout << "[FQKV Tiling] num_heads=" << num_heads
+            //   << " num_kv_heads=" << num_kv_heads << std::endl;
+
+
+        tiling.set_batch(B);
+        tiling.set_seq_len(S);
+        tiling.set_hidden(D);
+        tiling.set_num_heads(num_heads);
+        tiling.set_num_kv_heads(num_kv_heads);
+
+        // std::cout << "[FQKV Tiling] Setting TilingData: B=" << B << " S=" << S << " D=" << D << " num_heads=" << num_heads
+            //   << " num_kv_heads=" << num_kv_heads << std::endl;
+
+        uint64_t total_tokens = static_cast<uint64_t>(B) * static_cast<uint64_t>(S);
+        // std::cout << "[FQKV Tiling] total_tokens=" << total_tokens << std::endl;
+
+        if (total_tokens == 0) {
+            tiling.set_tokens_per_block(1);
+            context->SetBlockDim(1);
+        } else {
+            // 一个很保守的 heuristic：
+            // - token 少（decode S=1）时，每个 block 1 个 token；
+            // - token 多一点时，每个 block x 个 token；
+                uint32_t tokens_per_block = 1;
+            if (total_tokens >= 32) {
+                tokens_per_block = 16;
+            }
+
+            uint32_t block_dim = static_cast<uint32_t>(
+                (total_tokens + tokens_per_block - 1) / tokens_per_block);
+
+            if (block_dim == 0) {
+                block_dim = 1;
+            } else if (block_dim > 32) {
+                block_dim = 32;
+            }
+
+            tiling.set_tokens_per_block(tokens_per_block);
+            context->SetBlockDim(block_dim);
+
+            // std::cout << "[FQKV Tiling] tokens_per_block=" << tokens_per_block
+                // << " block_dim=" << block_dim << std::endl;
+        }
+
+        
+        // save tiling data
+        auto *raw = context->GetRawTilingData();
+        tiling.SaveToBuffer(raw->GetData(), raw->GetCapacity());
+        raw->SetDataSize(tiling.GetDataSize());
+
+        // std::cout << "[FQKV Tiling] SaveToBuffer done, GRAPH_SUCCESS" << std::endl;
+
+        return ge::GRAPH_SUCCESS;
     }
 }
     
 
-
 namespace ge {
-static ge::graphStatus InferShape(gert::InferShapeContext* context)
-{
-    const gert::Shape* x1_shape = context->GetInputShape(0);
-    gert::Shape* y_shape = context->GetOutputShape(0);
-    *y_shape = *x1_shape;
-    return GRAPH_SUCCESS;
+    static ge::graphStatus InferShape(gert::InferShapeContext* context)
+    {
+        const gert::Shape* x_shape = context->GetInputShape(0);
+    
+        // q
+        gert::Shape* q_shape = context->GetOutputShape(0);
+        *q_shape = *x_shape;
+    
+        // k
+        gert::Shape* k_shape = context->GetOutputShape(1);
+        *k_shape = *x_shape;
+    
+        // v
+        gert::Shape* v_shape = context->GetOutputShape(2);
+        *v_shape = *x_shape;
+    
+        return GRAPH_SUCCESS;
+    }
+    
+    static ge::graphStatus InferDataType(gert::InferDataTypeContext *context)
+    {
+        const auto inputDataType = context->GetInputDataType(0);
+        context->SetOutputDataType(0, inputDataType);
+        context->SetOutputDataType(1, inputDataType);
+        context->SetOutputDataType(2, inputDataType);
+        return ge::GRAPH_SUCCESS;
+    }
 }
-static ge::graphStatus InferDataType(gert::InferDataTypeContext *context)
-{
-const auto inputDataType = context->GetInputDataType(0);
-context->SetOutputDataType(0, inputDataType);
-return ge::GRAPH_SUCCESS;
-}
-}
-
+    
 
 namespace ops {
 class FusedQKVProjectTranspose : public OpDef {
@@ -152,8 +189,8 @@ public:
             .DataType({ge::DT_FLOAT16, ge::DT_BF16, ge::DT_FLOAT})
             .Format({ge::FORMAT_ND, ge::FORMAT_ND, ge::FORMAT_ND})
             .UnknownShapeFormat({ge::FORMAT_ND, ge::FORMAT_ND, ge::FORMAT_ND});
-        this->Attr("num_heads").Int();
-        this->Attr("num_kv_heads").Int();
+        // this->Attr("num_heads").Int();
+        // this->Attr("num_kv_heads").Int();
 
         this->SetInferShape(ge::InferShape).SetInferDataType(ge::InferDataType);
 

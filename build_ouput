@@ -1,0 +1,201 @@
+using ASCEND_HOME_PATH: /usr/local/Ascend/ascend-toolkit/latest
+-- The C compiler identification is GNU 7.3.0
+-- The CXX compiler identification is GNU 7.3.0
+-- Check for working C compiler: /usr/bin/cc
+-- Check for working C compiler: /usr/bin/cc -- works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Check for working CXX compiler: /usr/bin/c++
+-- Check for working CXX compiler: /usr/bin/c++ -- works
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Opbuild generating sources
+-- Opbuild generating sources - done
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/ma-user/work/FusedQKVProjectTranspose/build_out
+gmake[1]: 进入目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+gmake[2]: 进入目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+gmake[3]: 进入目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+gmake[3]: 进入目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+Scanning dependencies of target ops_info_gen_ascend910b
+gmake[3]: 离开目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+Scanning dependencies of target cust_optiling
+gmake[3]: 进入目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+gmake[3]: 离开目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+gmake[3]: 进入目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+[ 33%] Generating tbe/op_info_cfg/ai_core/ascend910b/aic-ascend910b-ops-info.json
+[ 66%] Building CXX object op_host/CMakeFiles/cust_optiling.dir/fused_qkv_project_transpose.cpp.o
+
+
+==============check valid for ops info start==============
+==============check valid for ops info end================
+
+
+Compile op info cfg successfully.
+gmake[3]: 离开目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+[ 66%] Built target ops_info_gen_ascend910b
+[100%] Linking CXX shared library libcust_opmaster_rt2.0.so
+gmake[3]: 离开目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+[100%] Built target cust_optiling
+gmake[3]: 进入目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+Scanning dependencies of target FusedQKVProjectTranspose_ascend910b
+gmake[3]: 离开目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+gmake[3]: 进入目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+make[4]: 进入目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel”
+cd /home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel/FusedQKVProjectTranspose_ascend910b/kernel_0 && bash /home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel/FusedQKVProjectTranspose_ascend910b/bin_param/FusedQKVProjectTranspose-fused_qkv_project_transpose-2.sh --kernel-src=/home/ma-user/work/FusedQKVProjectTranspose/op_kernel/fused_qkv_project_transpose.cpp /home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel/FusedQKVProjectTranspose_ascend910b/dynamic/FusedQKVProjectTranspose.py /home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel/binary/ascend910b/fused_qkv_project_transpose make
+cd /home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel/FusedQKVProjectTranspose_ascend910b/kernel_1 && bash /home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel/FusedQKVProjectTranspose_ascend910b/bin_param/FusedQKVProjectTranspose-fused_qkv_project_transpose-0.sh --kernel-src=/home/ma-user/work/FusedQKVProjectTranspose/op_kernel/fused_qkv_project_transpose.cpp /home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel/FusedQKVProjectTranspose_ascend910b/dynamic/FusedQKVProjectTranspose.py /home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel/binary/ascend910b/fused_qkv_project_transpose make
+cd /home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel/FusedQKVProjectTranspose_ascend910b/kernel_2 && bash /home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel/FusedQKVProjectTranspose_ascend910b/bin_param/FusedQKVProjectTranspose-fused_qkv_project_transpose-1.sh --kernel-src=/home/ma-user/work/FusedQKVProjectTranspose/op_kernel/fused_qkv_project_transpose.cpp /home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel/FusedQKVProjectTranspose_ascend910b/dynamic/FusedQKVProjectTranspose.py /home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel/binary/ascend910b/fused_qkv_project_transpose make
+[ascend910b] Generating FusedQKVProjectTranspose_63ebe6c2639faf3a666169df228f09f3 ...
+[ascend910b] Generating FusedQKVProjectTranspose_5816e9218f15088289e202be3c412df3 ...
+[ascend910b] Generating FusedQKVProjectTranspose_c718ea58f38de2f8c9b233a5459ec37f ...
+[INFO] ATRACE(210893,python3):2025-12-07-19:00:24.155.350 [trace_attr.c:189](tid:210893) attr init success, timeout=0ms.
+[INFO] ATRACE(210893,python3):2025-12-07-19:00:24.155.422 [trace_recorder.c:121](tid:210893) use root path: /home/ma-user/ascend
+[INFO] RUNTIME(210893,python3):2025-12-07-19:00:24.157.933 [task_fail_callback_data_manager.cc:58] 210893 TaskFailCallBackManager: Constructor.
+make[5]: 进入目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel/FusedQKVProjectTranspose_ascend910b/kernel_1”
+/usr/local/Ascend/ascend-toolkit/latest/compiler/ccec_compiler/bin/bisheng -c -O3 -DDTYPE_HIDDEN_STATES=half -DORIG_DTYPE_HIDDEN_STATES=DT_FLOAT16 -DFORMAT_HIDDEN_STATES=FORMAT_ND -DDTYPE_W_Q=half -DORIG_DTYPE_W_Q=DT_FLOAT16 -DFORMAT_W_Q=FORMAT_ND -DDTYPE_W_K=half -DORIG_DTYPE_W_K=DT_FLOAT16 -DFORMAT_W_K=FORMAT_ND -DDTYPE_W_V=half -DORIG_DTYPE_W_V=DT_FLOAT16 -DFORMAT_W_V=FORMAT_ND -DDTYPE_B_Q=half -DORIG_DTYPE_B_Q=DT_FLOAT16 -DFORMAT_B_Q=FORMAT_ND -DDTYPE_B_K=half -DORIG_DTYPE_B_K=DT_FLOAT16 -DFORMAT_B_K=FORMAT_ND -DDTYPE_B_V=half -DORIG_DTYPE_B_V=DT_FLOAT16 -DFORMAT_B_V=FORMAT_ND -DDTYPE_Q=half -DORIG_DTYPE_Q=DT_FLOAT16 -DFORMAT_Q=FORMAT_ND -DDTYPE_K=half -DORIG_DTYPE_K=DT_FLOAT16 -DFORMAT_K=FORMAT_ND -DDTYPE_V=half -DORIG_DTYPE_V=DT_FLOAT16 -DFORMAT_V=FORMAT_ND -x cce -I/usr/local/Ascend/ascend-toolkit/8.1.RC1/aarch64-linux/tikcpp -I/usr/local/Ascend/ascend-toolkit/8.1.RC1/aarch64-linux/tikcpp/../../include -I/usr/local/Ascend/ascend-toolkit/8.1.RC1/aarch64-linux/tikcpp/tikcfw -I/usr/local/Ascend/ascend-toolkit/8.1.RC1/aarch64-linux/tikcpp/tikcfw/impl -I/usr/local/Ascend/ascend-toolkit/8.1.RC1/aarch64-linux/tikcpp/tikcfw/interface -I/home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel/FusedQKVProjectTranspose_ascend910b/dynamic/../ascendc/common -DHIGH_PERFORMANCE=1 -DDETERMINISTIC_MODE=1 --cce-auto-sync -mllvm -api-deps-filter --cce-disable-kernel-global-attr-check -include/usr/local/Ascend/ascend-toolkit/8.1.RC1/aarch64-linux/tikcpp/../../include/version/cann_version.h -DASCENDC_TPL_KERNEL -DONE_CORE_DUMP_SIZE=1048576 -DASCENDC_DUMP=0 -DL2_CACHE_HINT /home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel/FusedQKVProjectTranspose_ascend910b/kernel_1/kernel_meta_FusedQKVProjectTranspose_c718ea58f38de2f8c9b233a5459ec37f/kernel_meta/FusedQKVProjectTranspose_c718ea58f38de2f8c9b233a5459ec37f_210893_kernel.cpp --cce-aicore-arch=dav-c220-vec --cce-aicore-only -o /home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel/FusedQKVProjectTranspose_ascend910b/kernel_1/kernel_meta_FusedQKVProjectTranspose_c718ea58f38de2f8c9b233a5459ec37f/kernel_meta/FusedQKVProjectTranspose_c718ea58f38de2f8c9b233a5459ec37f_0.o -mllvm -cce-aicore-stack-size=0x8000 -mllvm -cce-aicore-function-stack-size=0x8000 -mllvm -cce-aicore-record-overflow=false -mllvm -cce-aicore-addr-transform -mllvm -cce-aicore-dcci-insert-for-scalar=false -include /home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel/FusedQKVProjectTranspose_ascend910b/kernel_1/kernel_meta_FusedQKVProjectTranspose_c718ea58f38de2f8c9b233a5459ec37f/kernel_meta/FusedQKVProjectTranspose_c718ea58f38de2f8c9b233a5459ec37f_210893_tiling_data.h -std=c++17 -DTILING_KEY_VAR=0UL -Dfused_qkv_project_transpose=fused_qkv_project_transpose_0_tilingkey -Dauto_gen_fused_qkv_project_transpose_kernel=FusedQKVProjectTranspose_c718ea58f38de2f8c9b233a5459ec37f_0
+make[5]: 离开目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel/FusedQKVProjectTranspose_ascend910b/kernel_1”
+Opc tool start working now, please wait for a moment.
+[INFO] RUNTIME(210893,python3):2025-12-07-19:00:37.934.027 [task_fail_callback_data_manager.cc:63] 210893 ~TaskFailCallBackManager: Destructor.
+[INFO] ATRACE(210893,python3):2025-12-07-19:00:39.167.645 [stacktrace_signal.c:188](tid:210893) unregister all signo sigaction, can not capture signal.
+[ascend910b] Generating FusedQKVProjectTranspose_c718ea58f38de2f8c9b233a5459ec37f Done
+[INFO] ATRACE(210895,python3):2025-12-07-19:00:24.155.602 [trace_attr.c:189](tid:210895) attr init success, timeout=0ms.
+[INFO] ATRACE(210895,python3):2025-12-07-19:00:24.155.648 [trace_recorder.c:121](tid:210895) use root path: /home/ma-user/ascend
+[INFO] RUNTIME(210895,python3):2025-12-07-19:00:24.157.931 [task_fail_callback_data_manager.cc:58] 210895 TaskFailCallBackManager: Constructor.
+make[5]: 进入目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel/FusedQKVProjectTranspose_ascend910b/kernel_0”
+/usr/local/Ascend/ascend-toolkit/latest/compiler/ccec_compiler/bin/bisheng -c -O3 -DDTYPE_HIDDEN_STATES=float -DORIG_DTYPE_HIDDEN_STATES=DT_FLOAT -DFORMAT_HIDDEN_STATES=FORMAT_ND -DDTYPE_W_Q=float -DORIG_DTYPE_W_Q=DT_FLOAT -DFORMAT_W_Q=FORMAT_ND -DDTYPE_W_K=float -DORIG_DTYPE_W_K=DT_FLOAT -DFORMAT_W_K=FORMAT_ND -DDTYPE_W_V=float -DORIG_DTYPE_W_V=DT_FLOAT -DFORMAT_W_V=FORMAT_ND -DDTYPE_B_Q=float -DORIG_DTYPE_B_Q=DT_FLOAT -DFORMAT_B_Q=FORMAT_ND -DDTYPE_B_K=float -DORIG_DTYPE_B_K=DT_FLOAT -DFORMAT_B_K=FORMAT_ND -DDTYPE_B_V=float -DORIG_DTYPE_B_V=DT_FLOAT -DFORMAT_B_V=FORMAT_ND -DDTYPE_Q=float -DORIG_DTYPE_Q=DT_FLOAT -DFORMAT_Q=FORMAT_ND -DDTYPE_K=float -DORIG_DTYPE_K=DT_FLOAT -DFORMAT_K=FORMAT_ND -DDTYPE_V=float -DORIG_DTYPE_V=DT_FLOAT -DFORMAT_V=FORMAT_ND -x cce -I/usr/local/Ascend/ascend-toolkit/8.1.RC1/aarch64-linux/tikcpp -I/usr/local/Ascend/ascend-toolkit/8.1.RC1/aarch64-linux/tikcpp/../../include -I/usr/local/Ascend/ascend-toolkit/8.1.RC1/aarch64-linux/tikcpp/tikcfw -I/usr/local/Ascend/ascend-toolkit/8.1.RC1/aarch64-linux/tikcpp/tikcfw/impl -I/usr/local/Ascend/ascend-toolkit/8.1.RC1/aarch64-linux/tikcpp/tikcfw/interface -I/home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel/FusedQKVProjectTranspose_ascend910b/dynamic/../ascendc/common -DHIGH_PERFORMANCE=1 -DDETERMINISTIC_MODE=1 --cce-auto-sync -mllvm -api-deps-filter --cce-disable-kernel-global-attr-check -include/usr/local/Ascend/ascend-toolkit/8.1.RC1/aarch64-linux/tikcpp/../../include/version/cann_version.h -DASCENDC_TPL_KERNEL -DONE_CORE_DUMP_SIZE=1048576 -DASCENDC_DUMP=0 -DL2_CACHE_HINT /home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel/FusedQKVProjectTranspose_ascend910b/kernel_0/kernel_meta_FusedQKVProjectTranspose_63ebe6c2639faf3a666169df228f09f3/kernel_meta/FusedQKVProjectTranspose_63ebe6c2639faf3a666169df228f09f3_210895_kernel.cpp --cce-aicore-arch=dav-c220-vec --cce-aicore-only -o /home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel/FusedQKVProjectTranspose_ascend910b/kernel_0/kernel_meta_FusedQKVProjectTranspose_63ebe6c2639faf3a666169df228f09f3/kernel_meta/FusedQKVProjectTranspose_63ebe6c2639faf3a666169df228f09f3_0.o -mllvm -cce-aicore-stack-size=0x8000 -mllvm -cce-aicore-function-stack-size=0x8000 -mllvm -cce-aicore-record-overflow=false -mllvm -cce-aicore-addr-transform -mllvm -cce-aicore-dcci-insert-for-scalar=false -include /home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel/FusedQKVProjectTranspose_ascend910b/kernel_0/kernel_meta_FusedQKVProjectTranspose_63ebe6c2639faf3a666169df228f09f3/kernel_meta/FusedQKVProjectTranspose_63ebe6c2639faf3a666169df228f09f3_210895_tiling_data.h -std=c++17 -DTILING_KEY_VAR=0UL -Dfused_qkv_project_transpose=fused_qkv_project_transpose_0_tilingkey -Dauto_gen_fused_qkv_project_transpose_kernel=FusedQKVProjectTranspose_63ebe6c2639faf3a666169df228f09f3_0
+make[5]: 离开目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel/FusedQKVProjectTranspose_ascend910b/kernel_0”
+Opc tool start working now, please wait for a moment.
+[INFO] RUNTIME(210895,python3):2025-12-07-19:00:37.967.157 [task_fail_callback_data_manager.cc:63] 210895 ~TaskFailCallBackManager: Destructor.
+[INFO] ATRACE(210895,python3):2025-12-07-19:00:39.332.185 [stacktrace_signal.c:188](tid:210895) unregister all signo sigaction, can not capture signal.
+[ascend910b] Generating FusedQKVProjectTranspose_63ebe6c2639faf3a666169df228f09f3 Done
+[INFO] ATRACE(210894,python3):2025-12-07-19:00:24.155.350 [trace_attr.c:189](tid:210894) attr init success, timeout=0ms.
+[INFO] ATRACE(210894,python3):2025-12-07-19:00:24.155.408 [trace_recorder.c:121](tid:210894) use root path: /home/ma-user/ascend
+[INFO] RUNTIME(210894,python3):2025-12-07-19:00:24.157.970 [task_fail_callback_data_manager.cc:58] 210894 TaskFailCallBackManager: Constructor.
+make[5]: 进入目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel/FusedQKVProjectTranspose_ascend910b/kernel_2”
+/usr/local/Ascend/ascend-toolkit/latest/compiler/ccec_compiler/bin/bisheng -c -O3 -DDTYPE_HIDDEN_STATES=bfloat16_t -DORIG_DTYPE_HIDDEN_STATES=DT_BF16 -DFORMAT_HIDDEN_STATES=FORMAT_ND -DDTYPE_W_Q=bfloat16_t -DORIG_DTYPE_W_Q=DT_BF16 -DFORMAT_W_Q=FORMAT_ND -DDTYPE_W_K=bfloat16_t -DORIG_DTYPE_W_K=DT_BF16 -DFORMAT_W_K=FORMAT_ND -DDTYPE_W_V=bfloat16_t -DORIG_DTYPE_W_V=DT_BF16 -DFORMAT_W_V=FORMAT_ND -DDTYPE_B_Q=bfloat16_t -DORIG_DTYPE_B_Q=DT_BF16 -DFORMAT_B_Q=FORMAT_ND -DDTYPE_B_K=bfloat16_t -DORIG_DTYPE_B_K=DT_BF16 -DFORMAT_B_K=FORMAT_ND -DDTYPE_B_V=bfloat16_t -DORIG_DTYPE_B_V=DT_BF16 -DFORMAT_B_V=FORMAT_ND -DDTYPE_Q=bfloat16_t -DORIG_DTYPE_Q=DT_BF16 -DFORMAT_Q=FORMAT_ND -DDTYPE_K=bfloat16_t -DORIG_DTYPE_K=DT_BF16 -DFORMAT_K=FORMAT_ND -DDTYPE_V=bfloat16_t -DORIG_DTYPE_V=DT_BF16 -DFORMAT_V=FORMAT_ND -x cce -I/usr/local/Ascend/ascend-toolkit/8.1.RC1/aarch64-linux/tikcpp -I/usr/local/Ascend/ascend-toolkit/8.1.RC1/aarch64-linux/tikcpp/../../include -I/usr/local/Ascend/ascend-toolkit/8.1.RC1/aarch64-linux/tikcpp/tikcfw -I/usr/local/Ascend/ascend-toolkit/8.1.RC1/aarch64-linux/tikcpp/tikcfw/impl -I/usr/local/Ascend/ascend-toolkit/8.1.RC1/aarch64-linux/tikcpp/tikcfw/interface -I/home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel/FusedQKVProjectTranspose_ascend910b/dynamic/../ascendc/common -DHIGH_PERFORMANCE=1 -DDETERMINISTIC_MODE=1 --cce-auto-sync -mllvm -api-deps-filter --cce-disable-kernel-global-attr-check -include/usr/local/Ascend/ascend-toolkit/8.1.RC1/aarch64-linux/tikcpp/../../include/version/cann_version.h -DASCENDC_TPL_KERNEL -DONE_CORE_DUMP_SIZE=1048576 -DASCENDC_DUMP=0 -DL2_CACHE_HINT /home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel/FusedQKVProjectTranspose_ascend910b/kernel_2/kernel_meta_FusedQKVProjectTranspose_5816e9218f15088289e202be3c412df3/kernel_meta/FusedQKVProjectTranspose_5816e9218f15088289e202be3c412df3_210894_kernel.cpp --cce-aicore-arch=dav-c220-vec --cce-aicore-only -o /home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel/FusedQKVProjectTranspose_ascend910b/kernel_2/kernel_meta_FusedQKVProjectTranspose_5816e9218f15088289e202be3c412df3/kernel_meta/FusedQKVProjectTranspose_5816e9218f15088289e202be3c412df3_0.o -mllvm -cce-aicore-stack-size=0x8000 -mllvm -cce-aicore-function-stack-size=0x8000 -mllvm -cce-aicore-record-overflow=false -mllvm -cce-aicore-addr-transform -mllvm -cce-aicore-dcci-insert-for-scalar=false -include /home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel/FusedQKVProjectTranspose_ascend910b/kernel_2/kernel_meta_FusedQKVProjectTranspose_5816e9218f15088289e202be3c412df3/kernel_meta/FusedQKVProjectTranspose_5816e9218f15088289e202be3c412df3_210894_tiling_data.h -std=c++17 -DTILING_KEY_VAR=0UL -Dfused_qkv_project_transpose=fused_qkv_project_transpose_0_tilingkey -Dauto_gen_fused_qkv_project_transpose_kernel=FusedQKVProjectTranspose_5816e9218f15088289e202be3c412df3_0
+make[5]: 离开目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel/FusedQKVProjectTranspose_ascend910b/kernel_2”
+Opc tool start working now, please wait for a moment.
+[INFO] RUNTIME(210894,python3):2025-12-07-19:00:38.360.959 [task_fail_callback_data_manager.cc:63] 210894 ~TaskFailCallBackManager: Destructor.
+[INFO] ATRACE(210894,python3):2025-12-07-19:00:39.632.153 [stacktrace_signal.c:188](tid:210894) unregister all signo sigaction, can not capture signal.
+[ascend910b] Generating FusedQKVProjectTranspose_5816e9218f15088289e202be3c412df3 Done
+make[4]: 离开目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel”
+WARNING: cannot find /home/ma-user/work/FusedQKVProjectTranspose/build_out/autogen/custom_compile_options.ini
+gmake[3]: 离开目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+[100%] Built target FusedQKVProjectTranspose_ascend910b
+gmake[3]: 进入目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+Scanning dependencies of target ascendc_bin_ascend910b_gen_ops_config
+gmake[3]: 离开目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+gmake[3]: 进入目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+gmake[3]: 离开目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+[100%] Built target ascendc_bin_ascend910b_gen_ops_config
+gmake[3]: 进入目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+Scanning dependencies of target binary
+gmake[3]: 离开目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+[100%] Built target binary
+gmake[2]: 离开目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+gmake[1]: 离开目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+gmake[1]: 进入目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+gmake[2]: 进入目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+gmake[2]: 进入目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+gmake[2]: 进入目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+gmake[2]: 进入目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+gmake[2]: 进入目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+gmake[2]: 进入目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+gmake[2]: 进入目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+gmake[2]: 进入目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+Scanning dependencies of target modify_vendor
+gmake[2]: 离开目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+Scanning dependencies of target gen_version_info
+Scanning dependencies of target npu_supported_ops
+Scanning dependencies of target cust_opapi
+gmake[2]: 离开目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+gmake[2]: 离开目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+gmake[2]: 进入目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+gmake[2]: 离开目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+gmake[2]: 离开目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+gmake[2]: 进入目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+Scanning dependencies of target cust_tf_parsers
+gmake[2]: 进入目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+gmake[2]: 离开目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+gmake[2]: 离开目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+gmake[2]: 进入目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+gmake[2]: 离开目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+Scanning dependencies of target cust_op_proto
+gmake[2]: 进入目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+gmake[2]: 离开目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+[  8%] Generating scripts/install.sh, scripts/upgrade.sh
+gmake[2]: 进入目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+[ 16%] Building CXX object op_host/CMakeFiles/cust_opapi.dir/__/autogen/aclnn_fused_qkv_project_transpose.cpp.o
+[ 25%] Generating tbe/op_info_cfg/ai_core/npu_supported_ops.json
+[ 33%] Built target ops_info_gen_ascend910b
+[ 33%] Built target gen_version_info
+[ 50%] Built target cust_optiling
+[ 58%] Building CXX object framework/tf_plugin/CMakeFiles/cust_tf_parsers.dir/tensorflow_fused_qkv_project_transpose_plugin.cc.o
+gmake[2]: 进入目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+[ 66%] Building CXX object op_host/CMakeFiles/cust_op_proto.dir/__/autogen/op_proto.cc.o
+[ 75%] Building CXX object op_host/CMakeFiles/cust_op_proto.dir/fused_qkv_project_transpose.cpp.o
+/home/ma-user/work/FusedQKVProjectTranspose/build_out/autogen /home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel/tbe/op_info_cfg/ai_core
+Scanning dependencies of target optiling_compat
+gmake[2]: 离开目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+gmake[2]: 离开目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+gmake[2]: 进入目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+gmake[2]: 离开目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+[ 75%] Built target modify_vendor
+[ 75%] Built target optiling_compat
+[INFO] Succed generated /home/ma-user/work/FusedQKVProjectTranspose/build_out/op_kernel/tbe/op_info_cfg/ai_core/npu_supported_ops.json
+gmake[2]: 离开目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+[ 75%] Built target npu_supported_ops
+[ 83%] Linking CXX shared library libcust_opapi.so
+gmake[2]: 离开目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+[ 83%] Built target cust_opapi
+[ 91%] Linking CXX shared library libcust_tf_parsers.so
+gmake[2]: 离开目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+[ 91%] Built target cust_tf_parsers
+[100%] Linking CXX shared library libcust_opsproto_rt2.0.so
+gmake[2]: 离开目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+[100%] Built target cust_op_proto
+gmake[1]: 离开目录“/home/ma-user/work/FusedQKVProjectTranspose/build_out”
+Run CPack packaging tool...
+CPack: Create package using External
+CPack: Install projects
+CPack: - Run preinstall target for: opp
+CPack: - Install project: opp []
+CPack: Create package
+
+About to compress 772 KB of data...
+Adding files to archive named "custom_opp_euleros_aarch64.run"...
+./help.info
+./install.sh
+./packages/vendors/customize/framework/tensorflow/libcust_tf_parsers.so
+./packages/vendors/customize/framework/tensorflow/npu_supported_ops.json
+./packages/vendors/customize/op_api/include/aclnn_fused_qkv_project_transpose.h
+./packages/vendors/customize/op_api/lib/libcust_opapi.so
+./packages/vendors/customize/op_impl/ai_core/tbe/config/ascend910b/aic-ascend910b-ops-info.json
+./packages/vendors/customize/op_impl/ai_core/tbe/customize_impl/dynamic/fused_qkv_project_transpose.cpp
+./packages/vendors/customize/op_impl/ai_core/tbe/customize_impl/dynamic/fused_qkv_project_transpose.py
+./packages/vendors/customize/op_impl/ai_core/tbe/kernel/ascend910b/fused_qkv_project_transpose/FusedQKVProjectTranspose_5816e9218f15088289e202be3c412df3.json
+./packages/vendors/customize/op_impl/ai_core/tbe/kernel/ascend910b/fused_qkv_project_transpose/FusedQKVProjectTranspose_5816e9218f15088289e202be3c412df3.o
+./packages/vendors/customize/op_impl/ai_core/tbe/kernel/ascend910b/fused_qkv_project_transpose/FusedQKVProjectTranspose_63ebe6c2639faf3a666169df228f09f3.json
+./packages/vendors/customize/op_impl/ai_core/tbe/kernel/ascend910b/fused_qkv_project_transpose/FusedQKVProjectTranspose_63ebe6c2639faf3a666169df228f09f3.o
+./packages/vendors/customize/op_impl/ai_core/tbe/kernel/ascend910b/fused_qkv_project_transpose/FusedQKVProjectTranspose_c718ea58f38de2f8c9b233a5459ec37f.json
+./packages/vendors/customize/op_impl/ai_core/tbe/kernel/ascend910b/fused_qkv_project_transpose/FusedQKVProjectTranspose_c718ea58f38de2f8c9b233a5459ec37f.o
+./packages/vendors/customize/op_impl/ai_core/tbe/kernel/config/ascend910b/binary_info_config.json
+./packages/vendors/customize/op_impl/ai_core/tbe/kernel/config/ascend910b/fused_qkv_project_transpose.json
+./packages/vendors/customize/op_impl/ai_core/tbe/op_tiling/lib/linux/aarch64/libcust_opmaster_rt2.0.so
+./packages/vendors/customize/op_impl/ai_core/tbe/op_tiling/liboptiling.so
+./packages/vendors/customize/op_proto/inc/op_proto.h
+./packages/vendors/customize/op_proto/lib/linux/aarch64/libcust_opsproto_rt2.0.so
+./packages/vendors/customize/version.info
+./upgrade.sh
+CRC: 4042709927
+SHA256: c6405966ff23725b411fb1ea7121f3432013d75265a038af3514664fea98e600
+Skipping md5sum at user request
+
+Self-extractable archive "custom_opp_euleros_aarch64.run" successfully created.
+Copy /home/ma-user/work/FusedQKVProjectTranspose/build_out/_CPack_Packages/Linux/External/custom_opp_euleros_aarch64.run/custom_opp_euleros_aarch64.run to /home/ma-user/work/FusedQKVProjectTranspose/build_out/
+CPack: - package: /home/ma-user/work/FusedQKVProjectTranspose/build_out/custom_opp_euleros_aarch64.run.json generated.
