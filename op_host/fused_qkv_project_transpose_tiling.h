@@ -1,4 +1,5 @@
 #include "register/tilingdata_base.h"
+#include "tiling/tiling_api.h"
 
 namespace optiling {
   BEGIN_TILING_DATA_DEF(TilingData)
@@ -10,8 +11,11 @@ namespace optiling {
     // attrs
     TILING_DATA_FIELD_DEF(uint32_t, num_heads);        // H
     TILING_DATA_FIELD_DEF(uint32_t, num_kv_heads);     // H_kv
-  
     TILING_DATA_FIELD_DEF(uint32_t, tokens_per_block); // tp
+    TILING_DATA_FIELD_DEF(uint64_t, sys_workspace_size); // hp
+
+    TILING_DATA_FIELD_DEF_STRUCT(TCubeTiling, cube_tiling);
+
   END_TILING_DATA_DEF;
   
   REGISTER_TILING_DATA_CLASS(FusedQKVProjectTranspose, TilingData)

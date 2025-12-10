@@ -1,12 +1,15 @@
 #include <iostream>
 #include "fused_qkv_project_transpose_tiling.h"
 #include "register/op_def_registry.h"
+// #include "lib/matmul/matmul_tiling.h" 
 
+// #include "lib/matmul_intf.h"
+// using namespace AscendC;
 
 namespace optiling {
     static ge::graphStatus TilingFunc(gert::TilingContext* context)
     {
-        // std::cout << "[FQKV Tiling] Enter TilingFunc" << std::endl;
+        std::cout << "[FQKV Tiling] Enter TilingFunc" << std::endl;
 
         optiling::TilingData tiling;
 
@@ -49,33 +52,27 @@ namespace optiling {
         // std::cout << "[FQKV Tiling] num_heads=" << num_heads
             //   << " num_kv_heads=" << num_kv_heads << std::endl;
 
-
         tiling.set_batch(B);
         tiling.set_seq_len(S);
         tiling.set_hidden(D);
         tiling.set_num_heads(num_heads);
         tiling.set_num_kv_heads(num_kv_heads);
 
-        // std::cout << "[FQKV Tiling] Setting TilingData: B=" << B << " S=" << S << " D=" << D << " num_heads=" << num_heads
-            //   << " num_kv_heads=" << num_kv_heads << std::endl;
+        std::cout << "[FQKV Tiling] Setting TilingData: B=" << B << " S=" << S << " D=" << D << " num_heads=" << num_heads << " num_kv_heads=" << num_kv_heads << std::endl;
 
         uint64_t total_tokens = static_cast<uint64_t>(B) * static_cast<uint64_t>(S);
         // std::cout << "[FQKV Tiling] total_tokens=" << total_tokens << std::endl;
-
+        
+        uint32_t tokens_per_block = 1;
+        uint32_t block_dim = 1;
         if (total_tokens == 0) {
             tiling.set_tokens_per_block(1);
             context->SetBlockDim(1);
         } else {
-            // 一个很保守的 heuristic：
-            // - token 少（decode S=1）时，每个 block 1 个 token；
-            // - token 多一点时，每个 block x 个 token；
-                uint32_t tokens_per_block = 1;
             if (total_tokens >= 32) {
                 tokens_per_block = 16;
             }
-
-            uint32_t block_dim = static_cast<uint32_t>(
-                (total_tokens + tokens_per_block - 1) / tokens_per_block);
+            block_dim = static_cast<uint32_t>((total_tokens + tokens_per_block - 1) / tokens_per_block);
 
             if (block_dim == 0) {
                 block_dim = 1;
@@ -90,13 +87,54 @@ namespace optiling {
                 // << " block_dim=" << block_dim << std::endl;
         }
 
+        auto ascendcPlatform = platform_ascendc::PlatformAscendC(context->GetPlatformInfo());
+            
+        if (false){
+            // Matmul tiling 
+            // matmul_tiling::MatmulApiTiling cubeTiling(ascendcPlatform);
+            matmul_tiling::MultiCoreMatmulTiling cubeTiling(ascendcPlatform); 
+            cubeTiling.SetDim(block_dim);   
+            cubeTiling.SetAType(matmul_tiling::TPosition::GM, matmul_tiling::CubeFormat::ND, matmul_tiling::DataType::DT_BF16);
+            cubeTiling.SetBType(matmul_tiling::TPosition::GM, matmul_tiling::CubeFormat::ND, matmul_tiling::DataType::DT_BF16);
+            cubeTiling.SetCType(matmul_tiling::TPosition::GM, matmul_tiling::CubeFormat::ND, matmul_tiling::DataType::DT_FLOAT);
+            cubeTiling.SetBiasType(matmul_tiling::TPosition::GM, matmul_tiling::CubeFormat::ND, matmul_tiling::DataType::DT_FLOAT);
+            uint32_t M = tokens_per_block;
+            uint32_t K = D;
+            uint32_t N = D;
+            cubeTiling.SetShape(M, N, K);
+            cubeTiling.SetOrgShape(S, N, K);
+            cubeTiling.SetBufferSpace(-1, -1, -1);
+            cubeTiling.SetBias(true);
+
+            if (cubeTiling.GetTiling(tiling.cube_tiling) == -1) {
+                return ge::GRAPH_FAILED;
+            }
+        }
         
+        // // for matmul
+        // uint64_t systemWorkspaceSize = static_cast<uint64_t>(ascendcPlatform.GetLibApiWorkSpaceSize());
+        // // for fp32 bias
+        // uint64_t userWorkspaceSize = static_cast<uint64_t>(3u) * static_cast<uint64_t>(D) * sizeof(float);
+
+        // std::cout << "[FQKV Tiling] systemWorkspaceSize=" << systemWorkspaceSize << " userWorkspaceSize=" << userWorkspaceSize << std::endl;
+        
+        size_t* workspaces = context->GetWorkspaceSizes(1);
+        // if (workspaces == nullptr) {
+        //     return ge::GRAPH_FAILED;
+        // }
+        // workspaces[0] = 0;
+        // tiling.set_sys_workspace_size(systemWorkspaceSize);
+
+        (void)workspaces;
+        // workspaces[0] = userWorkspaceSize + systemWorkspaceSize;
+
         // save tiling data
         auto *raw = context->GetRawTilingData();
         tiling.SaveToBuffer(raw->GetData(), raw->GetCapacity());
         raw->SetDataSize(tiling.GetDataSize());
 
-        // std::cout << "[FQKV Tiling] SaveToBuffer done, GRAPH_SUCCESS" << std::endl;
+
+        std::cout << "[FQKV Tiling] SaveToBuffer done, GRAPH_SUCCESS" << std::endl;
 
         return ge::GRAPH_SUCCESS;
     }
