@@ -11,6 +11,9 @@ namespace optiling {
     // attrs
     TILING_DATA_FIELD_DEF(uint32_t, num_heads);        // H
     TILING_DATA_FIELD_DEF(uint32_t, num_kv_heads);     // H_kv
+    TILING_DATA_FIELD_DEF(uint32_t, head_dim); // Dh
+    TILING_DATA_FIELD_DEF(uint32_t, head_kv_dim); // kvDh
+    
     TILING_DATA_FIELD_DEF(uint32_t, tokens_per_block); // tp
     TILING_DATA_FIELD_DEF(uint64_t, sys_workspace_size); // hp
 
