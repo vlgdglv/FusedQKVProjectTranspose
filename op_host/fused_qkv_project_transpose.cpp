@@ -51,19 +51,18 @@ namespace optiling {
         tiling.set_head_kv_dim(head_kv_dim);
         tiling.set_tokens_per_block(B * S);
         
-
-        context->SetBlockDim(20);
+        context->SetBlockDim(32);
    
         // Matmul tiling 
         matmul_tiling::MatmulApiTiling cubeTiling(ascendcPlatform);
         // matmul_tiling::MultiCoreMatmulTiling cubeTiling(ascendcPlatform); 
-        // cubeTiling.SetDim(block_dim);   
+        // cubeTiling.SetDim(20);   
         cubeTiling.SetAType(matmul_tiling::TPosition::GM, matmul_tiling::CubeFormat::ND, matmul_tiling::DataType::DT_BF16);
         cubeTiling.SetBType(matmul_tiling::TPosition::GM, matmul_tiling::CubeFormat::ND, matmul_tiling::DataType::DT_BF16);
-        cubeTiling.SetCType(matmul_tiling::TPosition::GM, matmul_tiling::CubeFormat::ND, matmul_tiling::DataType::DT_BF16);
+        cubeTiling.SetCType(matmul_tiling::TPosition::VECIN, matmul_tiling::CubeFormat::ND, matmul_tiling::DataType::DT_BF16);
         
         uint32_t orgM = total_token;   // B*S
-        uint32_t orgN = head_dim;      // head_dim = D/num_heads
+        uint32_t orgN = head_dim * 3;      // head_dim = D/num_heads
         uint32_t orgK = D;
         cubeTiling.SetShape(orgM, orgN, orgK);
         cubeTiling.SetOrgShape(orgM, orgN, orgK);
@@ -76,7 +75,7 @@ namespace optiling {
         // for matmul
         uint64_t systemWorkspaceSize = static_cast<uint64_t>(ascendcPlatform.GetLibApiWorkSpaceSize());
         // for fp32 bias
-        uint64_t userWorkspaceSize = 0;
+        uint64_t userWorkspaceSize = 0; //(uint64_t)num_heads * 3ull * (uint64_t)head_dim * sizeof(uint16_t);
         // std::cout << "[FQKV Tiling] systemWorkspaceSize=" << systemWorkspaceSize << " userWorkspaceSize=" << userWorkspaceSize << std::endl;
         
         size_t* workspaces = context->GetWorkspaceSizes(1);
