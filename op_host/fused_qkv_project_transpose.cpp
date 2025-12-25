@@ -54,23 +54,23 @@ namespace optiling {
         context->SetBlockDim(32);
    
         // Matmul tiling 
-        matmul_tiling::MatmulApiTiling cubeTiling(ascendcPlatform);
-        // matmul_tiling::MultiCoreMatmulTiling cubeTiling(ascendcPlatform); 
-        // cubeTiling.SetDim(20);   
-        cubeTiling.SetAType(matmul_tiling::TPosition::GM, matmul_tiling::CubeFormat::ND, matmul_tiling::DataType::DT_BF16);
-        cubeTiling.SetBType(matmul_tiling::TPosition::GM, matmul_tiling::CubeFormat::ND, matmul_tiling::DataType::DT_BF16);
-        cubeTiling.SetCType(matmul_tiling::TPosition::VECIN, matmul_tiling::CubeFormat::ND, matmul_tiling::DataType::DT_BF16);
+        // matmul_tiling::MatmulApiTiling cubeTiling(ascendcPlatform);
+        // // matmul_tiling::MultiCoreMatmulTiling cubeTiling(ascendcPlatform); 
+        // // cubeTiling.SetDim(20);   
+        // cubeTiling.SetAType(matmul_tiling::TPosition::GM, matmul_tiling::CubeFormat::ND, matmul_tiling::DataType::DT_BF16);
+        // cubeTiling.SetBType(matmul_tiling::TPosition::GM, matmul_tiling::CubeFormat::ND, matmul_tiling::DataType::DT_BF16);
+        // cubeTiling.SetCType(matmul_tiling::TPosition::VECIN, matmul_tiling::CubeFormat::ND, matmul_tiling::DataType::DT_BF16);
         
-        uint32_t orgM = total_token;   // B*S
-        uint32_t orgN = head_dim * 3;      // head_dim = D/num_heads
-        uint32_t orgK = D;
-        cubeTiling.SetShape(orgM, orgN, orgK);
-        cubeTiling.SetOrgShape(orgM, orgN, orgK);
-        cubeTiling.SetBufferSpace(-1, -1, -1);
-        cubeTiling.SetBias(false);
-        if (cubeTiling.GetTiling(tiling.cube_tiling) == -1) {
-            return ge::GRAPH_FAILED;
-        }
+        // uint32_t orgM = total_token;   // B*S
+        // uint32_t orgN = head_dim * 3;      // head_dim = D/num_heads
+        // uint32_t orgK = D;
+        // cubeTiling.SetShape(orgM, orgN, orgK);
+        // cubeTiling.SetOrgShape(orgM, orgN, orgK);
+        // cubeTiling.SetBufferSpace(-1, -1, -1);
+        // cubeTiling.SetBias(false);
+        // if (cubeTiling.GetTiling(tiling.cube_tiling) == -1) {
+        //     return ge::GRAPH_FAILED;
+        // }
 
         // for matmul
         uint64_t systemWorkspaceSize = static_cast<uint64_t>(ascendcPlatform.GetLibApiWorkSpaceSize());
@@ -84,8 +84,8 @@ namespace optiling {
         }
         tiling.set_sys_workspace_size(systemWorkspaceSize);
 
-        workspaces[0] =  systemWorkspaceSize + userWorkspaceSize;
-        // workspaces[0] = 0;
+        // workspaces[0] =  systemWorkspaceSize + userWorkspaceSize;
+        workspaces[0] = 0;
 
         // save tiling data
         auto *raw = context->GetRawTilingData();

@@ -3,6 +3,7 @@
 #include "lib/matmul_intf.h"
 using namespace AscendC;
 
+#define BUFFER_NUM 2
 
 class KernelFusedQKVProjectTranspose {
 public:
@@ -43,16 +44,16 @@ public:
 
         
         pipe.InitBuffer(xBuf, D * sizeof(bfloat16_t));
-        pipe.InitBuffer(accBuf, 3 * Dh * sizeof(float));
-        pipe.InitBuffer(yBuf, 3 * Dh * sizeof(bfloat16_t));   
-        pipe.InitBuffer(wBuf, D * sizeof(bfloat16_t));   
+        pipe.InitBuffer(yBuf, 3 * Dh * sizeof(bfloat16_t));  
+        pipe.InitBuffer(accBuf, 3 * Dh * sizeof(float)); 
         pipe.InitBuffer(xfBuf, D * sizeof(float));   
-        pipe.InitBuffer(wfBuf, D * sizeof(float));
-        pipe.InitBuffer(tmpBuf, 3 * D * sizeof(float));
 
+        pipe.InitBuffer(wfBuf, D * sizeof(float));
         pipe.InitBuffer(prodBuf, D * sizeof(float));
         pipe.InitBuffer(redWorkBuf, D * sizeof(float));
-        pipe.InitBuffer(redOutBuf, sizeof(float));
+
+        pipe.InitBuffer(inQueueW, BUFFER_NUM, D * sizeof(bfloat16_t));    // w_row[D]
+        pipe.InitBuffer(outQueueR, BUFFER_NUM, 1 * sizeof(float));       // reduce result (1 float)
 
     }
 
@@ -62,21 +63,13 @@ public:
 
         const uint32_t O = 3u * Dh;
         const uint64_t w_stride = (uint64_t)O * (uint64_t)D;
-    
+        const uint64_t head_base = w_stride * (uint64_t)head_id;
+
         LocalTensor<bfloat16_t> x = xBuf.AllocTensor<bfloat16_t>();      // [D]
+        LocalTensor<bfloat16_t> y = yBuf.AllocTensor<bfloat16_t>();      // [O]
         LocalTensor<float>      acc = accBuf.AllocTensor<float>();       // [O]
         LocalTensor<float>      xfp32 = xfBuf.AllocTensor<float>();       // [D]
-        LocalTensor<float>      wfp32 = wfBuf.AllocTensor<float>();       // [D]
-        
-        LocalTensor<bfloat16_t> y = yBuf.AllocTensor<bfloat16_t>();      // [O]
-        LocalTensor<bfloat16_t> w = wBuf.AllocTensor<bfloat16_t>();      // [D]
-        LocalTensor<float>      tmp = tmpBuf.AllocTensor<float>();       // [D]
 
-        LocalTensor<float>      prod = prodBuf.AllocTensor<float>();     // [D]
-        LocalTensor<float>      work = redWorkBuf.AllocTensor<float>();  // [D] (workspace)
-        LocalTensor<float>      red  = redOutBuf.AllocTensor<float>();   // [1] (或 [D] 看你的 ReduceSum 需求)
-
-    
         DataCopy(x, hiddenGm[0], D);
         pipe_barrier(PIPE_ALL);
         Cast(xfp32, x, RoundMode::CAST_NONE, (int32_t)D);
@@ -85,67 +78,77 @@ public:
             acc.SetValue(o, 0.0f);
         }
         
-        for (uint32_t o = 0; o < O; ++o) {
-            DataCopy(w, wqGm[w_stride * (uint64_t)head_id + (uint64_t)o * (uint64_t)D], D);
-            pipe_barrier(PIPE_ALL);
-            Cast(wfp32, w, RoundMode::CAST_NONE, (int32_t)D);
-    
-            Mul(prod, wfp32, xfp32, (int32_t)D);
-            ReduceSum(red, prod, work, (int32_t)D);
-            acc.SetValue(o, red.GetValue(0));
+        int32_t loopCount = (int32_t)O + (BUFFER_NUM - 1);
+        for (int32_t i = 0; i < loopCount; ++i) {
+            if (i < (int32_t)O) {
+                CopyInW(head_base, (uint32_t)i);
+            }
+            if (i >= 1) {
+                ComputeRow(xfp32);
+                CopyOutAcc(acc, (uint32_t)(i - 1));
+            }
         }
     
-        pipe_barrier(PIPE_ALL);
         Cast(y, acc, RoundMode::CAST_RINT, (int32_t)O);
-        pipe_barrier(PIPE_ALL);
     
         DataCopy(qGm[(uint64_t)Dh * head_id], y[0],        Dh);
         DataCopy(kGm[(uint64_t)Dh * head_id], y[Dh],       Dh);
         DataCopy(vGm[(uint64_t)Dh * head_id], y[2 * Dh],   Dh);
     
-        pipe_barrier(PIPE_ALL);
-    
+        // pipe_barrier(PIPE_ALL);
+        xBuf.FreeTensor(x);
         yBuf.FreeTensor(y);
         accBuf.FreeTensor(acc);
-        xBuf.FreeTensor(x);
-        wBuf.FreeTensor(w);
+        xfBuf.FreeTensor(xfp32);
     }
 
+    __aicore__ inline void CopyInW(uint64_t head_base, uint32_t o) {
+        LocalTensor<bfloat16_t> wLocal = inQueueW.AllocTensor<bfloat16_t>();
+        DataCopy(wLocal, wqGm[head_base + (uint64_t)o * (uint64_t)D], D);
+        inQueueW.EnQue(wLocal);
+    }
 
-public:
-    // using aType     = MatmulType<TPosition::GM, CubeFormat::ND, bfloat16_t>;
-    using aType     = MatmulType<TPosition::GM, CubeFormat::ND, bfloat16_t>;
-    using bType     = MatmulType<TPosition::GM, CubeFormat::ND, bfloat16_t>;
-    using cType     = MatmulType<TPosition::VECIN, CubeFormat::ND, bfloat16_t>;
-    using biasType  = MatmulType<TPosition::GM, CubeFormat::ND, float>;
+    __aicore__ inline void ComputeRow(LocalTensor<float>& xfp32) {
+        LocalTensor<bfloat16_t> wLocal = inQueueW.DeQue<bfloat16_t>();
+    
+        LocalTensor<float> wF = wfBuf.AllocTensor<float>();        // [D]
+        LocalTensor<float> prod = prodBuf.AllocTensor<float>();    // [D]
+        LocalTensor<float> work = redWorkBuf.AllocTensor<float>();    // [D]
+        LocalTensor<float> rLocal = outQueueR.AllocTensor<float>(); // [1]
+    
+        Cast(wF, wLocal, RoundMode::CAST_NONE, (int32_t)D);
+        Mul(prod, wF, xfp32, (int32_t)D);
+        ReduceSum(rLocal, prod, work, (int32_t)D);
+    
+        outQueueR.EnQue(rLocal);
 
-    Matmul<aType, bType, cType, biasType> mm;
-    // Matmul<aType, bType, cType, biasType> mmQ;
-    // Matmul<aType, bType, cType, biasType> mmK;
-    // Matmul<aType, bType, cType, biasType> mmV;
-    TPipe pipe;
+        inQueueW.FreeTensor(wLocal);
+        redWorkBuf.FreeTensor(work);
+        prodBuf.FreeTensor(prod);
+        wfBuf.FreeTensor(wF);
+    }
 
+    __aicore__ inline void CopyOutAcc(LocalTensor<float>& acc, uint32_t o) {
+        LocalTensor<float> rLocal = outQueueR.DeQue<float>();
+        acc.SetValue(o, rLocal.GetValue(0));
+        outQueueR.FreeTensor(rLocal);
+    }
+    
 private:
     TilingData tilingData;
-
+    TPipe pipe;
+    
     GlobalTensor<bfloat16_t> hiddenGm, wqGm, wkGm, wvGm;
     GlobalTensor<bfloat16_t> bqGm, bkGm, bvGm;
     GlobalTensor<bfloat16_t> qGm, kGm, vGm;
     
     uint32_t B, S, D, nH, nHkv, Dh, kvDh;
 
-    // TBuf<TPosition::VECOUT> aBuf;
-    TBuf<TPosition::VECIN> tmpBuf;
-    TBuf<TPosition::VECIN> cBuf;
-    TBuf<TPosition::VECCALC> xBuf, yBuf, accBuf, wBuf;
-    TBuf<TPosition::VECCALC> xfBuf, wfBuf, tmpfBuf;
-    TBuf<TPosition::VECCALC> prodBuf;
-    TBuf<TPosition::VECCALC> redWorkBuf;
-    TBuf<TPosition::VECCALC> redOutBuf;
+    TBuf<TPosition::VECCALC> xBuf, yBuf, accBuf, xfBuf;
+    TBuf<TPosition::VECCALC> wfBuf, prodBuf, redWorkBuf;
 
-
-    // GlobalTensor<bfloat16_t> workGm;
-
+    TQue<QuePosition::VECIN,  BUFFER_NUM> inQueueW;
+    TQue<QuePosition::VECOUT, BUFFER_NUM> outQueueR;
 };
 
 extern "C" __global__ __aicore__ 
@@ -158,8 +161,6 @@ extern "C" __global__ __aicore__
     GET_TILING_DATA(tiling_data, tiling);
     KernelFusedQKVProjectTranspose op;
     
-    REGIST_MATMUL_OBJ(&op.pipe, GetSysWorkSpacePtr(), op.mm, &tiling_data.cube_tiling);
     op.Init(hidden_states, w_q, w_k, w_v, b_q, b_k, b_v, q, k, v, workspace, tiling_data);
     op.Process();
-
 }
